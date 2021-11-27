@@ -54,6 +54,12 @@
   background: #00aeff;
   color: #fff;
   font-size: 1.1em;
-  border: 5px solid transparent;
+  border: 2px solid transparent;
+  transition: .2s linear;
   margin: 10px;
+}
+.btn:hover{
+  background: #fff;
+  color: #00aeff;
+  border-color: #00aeff;
 }
