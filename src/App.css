@@ -15,7 +15,6 @@
 .header {
   text-align: center;
   font-size: 32px;
-  font-weight: 600;
 }
 
 .bio {
@@ -29,6 +28,16 @@
   margin-top: 16px;
   padding: 8px;
   border: 0;
-  border-radius: 5px;
-  
+  border-radius: 10px;
+  height: 50px;
+  background: #ff00dd;
+  border: 5px solid transparent;
+  transition: .2s linear;
+}
+.waveButton:hover{
+  background: white;
+  border-color: #ff00dd;
+}
+.waveButton:active{
+  transform: scale(0.98);
 }
