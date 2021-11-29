@@ -33,6 +33,7 @@
   transition: 0.2s linear;
   color: #fff;
   font-size: 1.2em;
+  width: 100%;
 }
 .waveButton:disabled{
   color: #333;

@@ -58,7 +58,7 @@ export default function App() {
     }
   };
 
-  const getNoOfWaves = async(wavePortalContract) =>{
+  const getNoOfWaves = async () => {
     const { ethereum } = window;
 
     if (ethereum) {
@@ -67,7 +67,7 @@ export default function App() {
       const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
       let count = await wavePortalContract.getTotalWaves();
       console.log("Retrieved total wave count...", count.toNumber());
-      
+
       return count.toNumber();
     }
   }
@@ -81,7 +81,7 @@ export default function App() {
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
         let count = await wavePortalContract.getTotalWaves();
-      
+
         console.log("Retrieved total wave count...", count.toNumber());
 
         /*
@@ -121,7 +121,7 @@ export default function App() {
 
         <div className="para">
           I'm Lakira. I am a 15 years old developer moving to web3 from web2.0.
-          
+
         </div>
 
 
@@ -132,10 +132,6 @@ export default function App() {
           )
         }
 
-        <div className='waves'>
-          <div className='no'>{noOfWaves}</div >
-          People are waved!
-        </div>
 
 
         <p className='para'>Connect your Ethereum wallet and wave at me!🚀</p>
@@ -144,9 +140,17 @@ export default function App() {
             Connet your wallet🦊
           </button>
         ) :
-          (<button className="waveButton" onClick={wave} disabled={isWaving ? true : false}>
-            Wave at Me
-          </button>)
+          (
+            <div>
+              <div className='waves'>
+                <div className='no'>{noOfWaves}</div >
+                People are waved!
+              </div>
+              <button className="waveButton" onClick={wave} disabled={isWaving ? true : false}>
+                Wave at Me
+              </button>
+            </div>
+          )
         }
 
 
