@@ -17,9 +17,8 @@
   font-size: 32px;
 }
 
-.bio {
+.para {
   text-align: center;
-  color: gray;
   margin-top: 16px;
 }
 
@@ -31,23 +30,31 @@
   height: 50px;
   background: #ff00dd;
   border: 5px solid transparent;
-  transition: .2s linear;
+  transition: 0.2s linear;
+  color: #fff;
+  font-size: 1.2em;
 }
-.waveButton:hover{
+.waveButton:disabled{
+  color: #333;
+}
+.waveButton:hover:enabled {
+  color: #001;
   background: white;
   border-color: #ff00dd;
 }
-.waveButton:active, .btn:active{
+
+.waveButton:active,
+.btn:active {
   transform: scale(0.98);
 }
-.connect{
+.connect {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   padding: 20px;
 }
-.btn{
+.btn {
   min-width: 100px;
   height: 50px;
   border-radius: 5px;
@@ -56,10 +63,56 @@
   font-size: 1.1em;
   border: 2px solid transparent;
   margin: 10px;
-  transition: .2s linear;
+  transition: 0.2s linear;
 }
-.btn:hover{
+.btn:hover {
   background: #fff;
   color: #00aeff;
   border-color: #00aeff;
+}
+.prograss-bar {
+  margin: 20px;
+  min-height: 50px;
+  border-radius: 10px;
+  width: calc(113 * 5px);
+  box-shadow: 0px 10px 13px -6px rgba(44, 62, 80, 1);
+  background-color: #00aeff;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 40px,
+    #fff 40px,
+    #fff 80px
+  );
+
+  animation: slide 1s linear infinite;
+  will-change: background-position;
+}
+
+.waves{
+  height: 180px;
+  width: 180px;
+  border-radius: 20px;
+  margin: 20px auto;
+  box-shadow: 0px 15px 15px -5px #4e4e4e;
+  /* margin: auto; */
+  text-align: center;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 5px solid #ff00dd;
+}
+.waves .no{
+  font-size: 1.8em;
+}
+
+@keyframes slide {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 113px;
+  }
 }
