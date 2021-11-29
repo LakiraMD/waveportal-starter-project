@@ -12,6 +12,9 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isWaving, setIsWaving] = useState(false);
   const [noOfWaves, setNoOfWaves] = useState(0);
+  const [msg, setMsg] = useState('')
+  const [allWaves, setAllWaves] = useState([]);
+
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -53,6 +56,10 @@ export default function App() {
 
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
+      (async () => {
+        setNoOfWaves(await getNoOfWaves());
+        await getAllWaves();
+      })()
     } catch (error) {
       console.log(error);
     }
@@ -72,7 +79,36 @@ export default function App() {
     }
   }
 
-  const wave = async () => {
+  const getAllWaves = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const waves = await wavePortalContract.getAllWaves();
+
+        let wavesCleaned = [];
+        waves.forEach(wave => {
+          wavesCleaned.push({
+            address: wave.waver,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message
+          });
+        });
+
+
+        setAllWaves(wavesCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const wave = async (msg) => {
     try {
       const { ethereum } = window;
 
@@ -87,7 +123,7 @@ export default function App() {
         /*
         * Execute the actual wave from your smart contract
         */
-        const waveTxn = await wavePortalContract.wave();
+        const waveTxn = await wavePortalContract.wave(msg);
         setIsWaving(true);
         console.log("Mining...", waveTxn.hash);
 
@@ -110,7 +146,8 @@ export default function App() {
     checkIfWalletIsConnected();
     // console.log(getNoOfWaves());
     (async () => {
-      setNoOfWaves(await getNoOfWaves())
+      setNoOfWaves(await getNoOfWaves());
+      await getAllWaves();
     })()
   }, []);
 
@@ -142,13 +179,28 @@ export default function App() {
         ) :
           (
             <div>
-              <div className='waves'>
-                <div className='no'>{noOfWaves}</div >
-                People are waved!
+              <div className='msg'>
+                <textarea className='msg-box' placeholder='Enter your msg ...' value={msg} onChange={(e) => setMsg(e.target.value)} />
+                <button className="waveButton" onClick={(e) => wave(msg)} disabled={isWaving ? true : false}>
+                  Wave at Me
+                </button>
               </div>
-              <button className="waveButton" onClick={wave} disabled={isWaving ? true : false}>
-                Wave at Me
-              </button>
+              <div className='wave-log'>
+                <div className='waves'>
+                  <div className='no'>{noOfWaves}</div >
+                  People are waved!
+                </div>
+                <div>
+                  {allWaves.map((wave, index) => {
+                    return (
+                      <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
+                        <div>Address: {wave.address}</div>
+                        <div>Time: {wave.timestamp.toString()}</div>
+                        <div>Message: {wave.message}</div>
+                      </div>)
+                  })}
+                </div>
+              </div>
             </div>
           )
         }
