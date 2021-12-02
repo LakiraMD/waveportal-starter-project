@@ -3,9 +3,11 @@ import { ethers } from "ethers";
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import abi from './utils/WavePortal.json';
+import Moment from 'react-moment';
+import { FaTwitter, FaGithub, FaInstagram, FaLinkedin, FaClipboard } from "react-icons/fa";
+import { RiArrowDropDownLine, RiArrowDropUpLine } from 'react-icons/ri'
 
 export default function App() {
-  // const wave = () => { };
   const contractAddress = `${process.env.REACT_APP_CONTRACT_ADDRESS}`;
   const contractABI = abi.abi;
   console.log(contractAddress);
@@ -99,7 +101,7 @@ export default function App() {
         });
 
 
-        setAllWaves(wavesCleaned);
+        setAllWaves(wavesCleaned.reverse());
       } else {
         console.log("Ethereum object doesn't exist!")
       }
@@ -120,19 +122,18 @@ export default function App() {
 
         console.log("Retrieved total wave count...", count.toNumber());
 
-        /*
-        * Execute the actual wave from your smart contract
-        */
-        const waveTxn = await wavePortalContract.wave(msg);
+
+        const waveTxn = await wavePortalContract.wave(msg, { gasLimit: 300000 });
         setIsWaving(true);
         console.log("Mining...", waveTxn.hash);
-
+        setMsg('');
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
 
         count = await wavePortalContract.getTotalWaves();
         setIsWaving(false);
         setNoOfWaves(count.toNumber());
+        await getAllWaves();
         console.log("Retrieved total wave count...", count.toNumber());
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -142,35 +143,34 @@ export default function App() {
     }
   }
 
+
   useEffect(() => {
     checkIfWalletIsConnected();
-    // console.log(getNoOfWaves());
     (async () => {
       setNoOfWaves(await getNoOfWaves());
       await getAllWaves();
+      console.log(allWaves)
     })()
   }, []);
 
   return (
-    <div className="mainContainer">
-      <div className="dataContainer">
-        <div className="header">👋Hey there! Welcome to Metaverse!👽</div>
 
-        <div className="para">
-          I'm Lakira. I am a 15 years old developer moving to web3 from web2.0.
+    <div className="dataContainer">
+      <div className="header">👋Hey there! Welcome to Metaverse!👽</div>
 
+      <div className="bio">
+        I'm Lakira. I am a 15 years old developer moving to web3 from web2.0.
+        <p className='connect'>Let's get connected!👇</p>
+        <div className='social-icons'>
+          <a href='https://twitter.com/Lakira_md' target='_blank'><FaTwitter title='Twitter' /></a>
+          <a href='#' target='_blank'><FaGithub title='Github' /></a>
+          <a href='#' target='_blank'><FaInstagram title='Instagram' /></a>
+          <a href='#' target='_blank'><FaLinkedin title='Linkedin' /></a>
         </div>
 
+      </div>
 
-
-        {
-          isWaving && (
-            <div className='prograss-bar'></div>
-          )
-        }
-
-
-
+      <div className='wave-box'>
         <p className='para'>Connect your Ethereum wallet and wave at me!🚀</p>
         {!currentAccount ? (
           <button className="btn" onClick={connectWallet}>
@@ -178,42 +178,53 @@ export default function App() {
           </button>
         ) :
           (
-            <div>
-              <div className='msg'>
-                <textarea className='msg-box' placeholder='Enter your msg ...' value={msg} onChange={(e) => setMsg(e.target.value)} />
-                <button className="waveButton" onClick={(e) => wave(msg)} disabled={isWaving ? true : false}>
-                  Wave at Me
-                </button>
-              </div>
-              <div className='wave-log'>
-                <div className='waves'>
-                  <div className='no'>{noOfWaves}</div >
-                  People are waved!
-                </div>
-                <div>
-                  {allWaves.map((wave, index) => {
-                    return (
-                      <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-                        <div>Address: {wave.address}</div>
-                        <div>Time: {wave.timestamp.toString()}</div>
-                        <div>Message: {wave.message}</div>
-                      </div>)
-                  })}
-                </div>
-              </div>
+            <div className='wave-msg'>
+              <textarea className='msg-box' placeholder='Enter your msg ...' value={msg} onChange={(e) => setMsg(e.target.value)} />
+              {
+
+              }
+              <button className="btn btn-wave" onClick={(e) => wave(msg)} disabled={isWaving ? true : false}>
+                {
+                  !isWaving ? <>Wave at Me!!!</> : (
+                    <div className='animation-loading'>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  )
+                }
+              </button>
             </div>
           )
         }
-
-
-        <div className="connect">
-          🎯-Follow me on Twitter!🐦
-          <a href="https://twitter.com/Lakira_md" target="_blank">
-            <button className="btn">@Lakira_md</button>
-          </a>
-        </div>
-
       </div>
+
+      <div className='wave-log'>
+        <div className='waves'>
+          <div className='no'>{noOfWaves}</div >
+          People are waved!
+        </div>
+        <div className='all-waves'>
+          {allWaves.map((wave, index) => {
+            console.log(wave);
+            return (
+              <div key={index} className='wave'>
+                <div className='msg'> {wave.message}</div>
+                <div className='time'><Moment fromNow>{wave.timestamp.toString()}</Moment></div>
+                <div className='waver'>From: {wave.address}</div>
+              </div>)
+          })}
+        </div>
+      </div>
+      <a href='#'>
+        <div className='back-to-top'>
+          <RiArrowDropUpLine />
+        </div>
+      </a>
+      <footer>
+        A project by <a href='https://twitter.com/_buildspace' target='_blank'>@_buildspace</a>
+      </footer>
     </div>
   );
 }
