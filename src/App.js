@@ -199,24 +199,25 @@ export default function App() {
           )
         }
       </div>
-
-      <div className='wave-log'>
-        <div className='waves'>
-          <div className='no'>{noOfWaves}</div >
-          People are waved!
+      {currentAccount && (
+        <div className='wave-log'>
+          <div className='waves'>
+            <div className='no'>{noOfWaves}</div >
+            People are waved!
+          </div>
+          <div className='all-waves'>
+            {allWaves.map((wave, index) => {
+              console.log(wave);
+              return (
+                <div key={index} className='wave'>
+                  <div className='msg'> {wave.message}</div>
+                  <div className='time'><Moment fromNow>{wave.timestamp.toString()}</Moment></div>
+                  <div className='waver'>From: {wave.address}</div>
+                </div>)
+            })}
+          </div>
         </div>
-        <div className='all-waves'>
-          {allWaves.map((wave, index) => {
-            console.log(wave);
-            return (
-              <div key={index} className='wave'>
-                <div className='msg'> {wave.message}</div>
-                <div className='time'><Moment fromNow>{wave.timestamp.toString()}</Moment></div>
-                <div className='waver'>From: {wave.address}</div>
-              </div>)
-          })}
-        </div>
-      </div>
+      )}
       <a href='#'>
         <div className='back-to-top'>
           <RiArrowDropUpLine />
